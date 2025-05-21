@@ -13,7 +13,7 @@ import com.vaadin.flow.component.notification.Notification;
 import java.util.Arrays;
 
 
-@Route("register-child")
+@Route("register-child-parent-ins")
 public class childParentRegistration extends VerticalLayout {
 
     private  VerticalLayout parentForm;

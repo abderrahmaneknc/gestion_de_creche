@@ -1,21 +1,37 @@
-package io.sleigh.fleet.views.models;
+import java.time.LocalDate;
 
-public class child {
-    private int id;
-    private String name;
-    private int age;
-    private String classroom;
+public  class child {
+    private final Long id;
+    private final String firstName;
+    private final String lastName;
+    private final LocalDate birthday;
+    private final String grade;
 
-    public child(int id, String name, int age, String classroom) {
+    public child(Long id, String firstName, String lastName, LocalDate birthday, String grade) {
         this.id = id;
-        this.name = name;
-        this.age = age;
-        this.classroom = classroom;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthday = birthday;
+        this.grade = grade;
     }
 
-    // Getters and Setters
-    public int getId() { return id; }
-    public String getName() { return name; }
-    public int getAge() { return age; }
-    public String getClassroom() { return classroom; }
+    public Long getId() {
+        return id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public LocalDate getBirthday() {
+        return birthday;
+    }
+
+    public String getGrade() {
+        return grade;
+    }
 }
