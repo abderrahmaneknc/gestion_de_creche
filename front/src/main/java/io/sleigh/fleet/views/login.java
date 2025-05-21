@@ -9,8 +9,9 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.notification.Notification;
 
-@Route("login")
+@Route("")
 public class login extends VerticalLayout {
 
     public login() {
@@ -38,6 +39,7 @@ public class login extends VerticalLayout {
 
         Button loginButton = new Button("Login", e -> {
             // Add login logic here
+            Notification.show("Sign in clicked!", 3000, Notification.Position.MIDDLE);
         });
         loginButton.setWidthFull();
 

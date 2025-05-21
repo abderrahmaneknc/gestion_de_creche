@@ -9,6 +9,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.component.notification.Notification;
 
 @Route("signup")
 public class signup extends VerticalLayout {
@@ -39,6 +40,7 @@ public class signup extends VerticalLayout {
 
         Button signUpButton = new Button("Sign Up", e -> {
             // signup logic here
+            Notification.show("Sign Up clicked!", 3000, Notification.Position.MIDDLE);
         });
         signUpButton.setWidthFull();
 
@@ -49,7 +51,7 @@ public class signup extends VerticalLayout {
         signInText.getElement().getStyle().set("display", "block");
         signInText.getElement().getStyle().set("text-align", "center");
 
-        signInText.addClickListener(e -> UI.getCurrent().navigate("signup"));
+        signInText.addClickListener(e -> UI.getCurrent().navigate(""));
         signInText.setWidthFull();
 
         formLayout.add(title, username, password, confirmPassword, signUpButton,signInText);
