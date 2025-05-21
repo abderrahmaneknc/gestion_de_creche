@@ -28,7 +28,7 @@ public class MainLayoutAdmin extends AppLayout {
         drawerLayout.add(
                 createLinkContainer("Children Management", ChildrenManagementView.class),
                 createLinkContainer("User Management", UserManagementView.class),
-                createLinkContainer("Daily Tracking", InscriptionManagement.class)
+                createLinkContainer("Inscriptinon Management", InscriptionManagement.class)
         );
 
         addToDrawer(drawerLayout);
