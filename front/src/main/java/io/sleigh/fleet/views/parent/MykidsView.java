@@ -1,11 +1,10 @@
 package io.sleigh.fleet.views.parent;
 
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.GridSelectionModel;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -13,13 +12,20 @@ import com.vaadin.flow.router.Route;
 import io.sleigh.fleet.views.admin.ChildrenManagementView;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Route(value = "mykids-management", layout = MainLayoutParent.class)
 public class MykidsView extends VerticalLayout {
+
     private final Grid<ChildrenManagementView.Child> childGrid;
-    private final List<Long> selectedChildren = new ArrayList<>();
+    private final HorizontalLayout headerLayout;
+    private final VerticalLayout childDetailsLayout;
+    private HorizontalLayout detailsHeaderLayout;
+
+    private final Button backButton;
+    private final Button modifyButton;
+    private final HorizontalLayout buttonsLayout;
+
     public MykidsView() {
         setSizeFull();
         setPadding(true);
@@ -33,17 +39,16 @@ public class MykidsView extends VerticalLayout {
                 .set("color", "#2c3e50");
 
         // inscription Button
-        Button InscriptButton = new Button("inscript new Child");
-        InscriptButton.getStyle()
-
+        Button inscriptButton = new Button("Inscript New Child");
+        inscriptButton.getStyle()
                 .set("border", "none")
                 .set("margin-left", "auto");
 
-        HorizontalLayout headerLayout = new HorizontalLayout(title, InscriptButton);
+        headerLayout = new HorizontalLayout(title, inscriptButton);
         headerLayout.setWidthFull();
         headerLayout.setAlignItems(FlexComponent.Alignment.CENTER);
 
-        // Grid
+        // Grid setup
         childGrid = new Grid<>(ChildrenManagementView.Child.class, false);
         childGrid.setWidthFull();
         childGrid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
@@ -76,15 +81,7 @@ public class MykidsView extends VerticalLayout {
                 .setAutoWidth(true)
                 .setSortable(true);
 
-//        // Enable single selection
-//        GridSelectionModel<ChildrenManagementView.Child> selectionModel = childGrid.setSelectionMode(Grid.SelectionMode.MULTI);
-//        selectionModel.addSelectionListener(event -> {
-//            selectedChildren.clear();
-//            event.getAllSelectedItems().forEach(child -> selectedChildren.add(child.getId()));
-//            System.out.println("Selected children IDs: " + selectedChildren);
-//        });
-
-        // Sample children
+        // Sample children data
         List<ChildrenManagementView.Child> children = List.of(
                 new ChildrenManagementView.Child(1L, "Alice", "Smith", LocalDate.of(2019, 5, 12), "Pre-K"),
                 new ChildrenManagementView.Child(2L, "Bob", "Johnson", LocalDate.of(2018, 3, 22), "Kindergarten"),
@@ -93,56 +90,75 @@ public class MykidsView extends VerticalLayout {
         );
         childGrid.setItems(children);
 
-        // Add styles to selected rows
-        childGrid.getElement().executeJs("""
-            const style = document.createElement('style');
-            style.textContent = `
-                vaadin-grid::part(row):hover {
-                    background-color: #e3f2fd;
-                }
-                vaadin-grid::part(selected-row) {
-                    background-color: #bbdefb !important;
-                }
-            `;
-            document.head.appendChild(style);
-        """);
+        // Selection listener on grid row
+        childGrid.setSelectionMode(Grid.SelectionMode.SINGLE);
+        childGrid.addSelectionListener(event -> {
+            event.getFirstSelectedItem().ifPresent(this::showChildDetails);
+        });
 
-        add(headerLayout, childGrid);
+        // Create details layout (hidden initially)
+        childDetailsLayout = new VerticalLayout();
+        childDetailsLayout.setWidthFull();
+        childDetailsLayout.setPadding(true);
+        childDetailsLayout.setSpacing(true);
+        childDetailsLayout.setVisible(false);
+
+        // Back button to return to grid
+        backButton = new Button("Back to List", e -> showChildList());
+        modifyButton = new Button("Modify",e -> {});
+        buttonsLayout = new HorizontalLayout(backButton, modifyButton);
+        buttonsLayout.setWidthFull();
+        buttonsLayout.setJustifyContentMode(JustifyContentMode.START);
+        buttonsLayout.setSpacing(true);
+        childDetailsLayout.add(buttonsLayout);
+
+
+        // Add all to main layout - initially show header + grid
+        add(headerLayout, childGrid, childDetailsLayout);
     }
 
-    public static class Child {
-        private final Long id;
-        private final String firstName;
-        private final String lastName;
-        private final LocalDate birthday;
-        private final String grade;
+    private void showChildDetails(ChildrenManagementView.Child child) {
+        headerLayout.setVisible(false);
+        childGrid.setVisible(false);
 
-        public Child(Long id, String firstName, String lastName, LocalDate birthday, String grade) {
-            this.id = id;
-            this.firstName = firstName;
-            this.lastName = lastName;
-            this.birthday = birthday;
-            this.grade = grade;
-        }
+        childDetailsLayout.removeAll();
 
-        public Long getId() {
-            return id;
-        }
+        // Create title
+        H2 detailsTitle = new H2("Child Details");
+        detailsTitle.getStyle().set("margin", "0"); //
+        detailsTitle.setWidthFull(); // optional clean up margin
 
-        public String getFirstName() {
-            return firstName;
-        }
+        // Buttons layout (already created)
+        buttonsLayout.setJustifyContentMode(JustifyContentMode.END);
 
-        public String getLastName() {
-            return lastName;
-        }
+        // Create horizontal layout with buttons on the left and title on the right
+        detailsHeaderLayout = new HorizontalLayout( detailsTitle,buttonsLayout);
+        detailsHeaderLayout.setWidthFull();
+        detailsHeaderLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+        detailsHeaderLayout.expand(detailsTitle); // title takes all remaining space pushing it right
 
-        public LocalDate getBirthday() {
-            return birthday;
-        }
+        // Add the combined header to the details layout
+        childDetailsLayout.add(detailsHeaderLayout);
 
-        public String getGrade() {
-            return grade;
-        }
+        // Add child info below
+        childDetailsLayout.add(new Paragraph("ID: " + child.getId()));
+        childDetailsLayout.add(new Paragraph("First Name: " + child.getFirstName()));
+        childDetailsLayout.add(new Paragraph("Last Name: " + child.getLastName()));
+        childDetailsLayout.add(new Paragraph("Birthday: " + child.getBirthday()));
+        childDetailsLayout.add(new Paragraph("Grade: " + child.getGrade()));
+
+        childDetailsLayout.setVisible(true);
+    }
+
+    private void showChildList() {
+        // Show header and grid
+        headerLayout.setVisible(true);
+        childGrid.setVisible(true);
+
+        // Hide details layout
+        childDetailsLayout.setVisible(false);
+
+        // Clear selection in grid
+        childGrid.deselectAll();
     }
 }
