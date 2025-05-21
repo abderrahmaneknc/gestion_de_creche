@@ -1,4 +1,4 @@
-package io.sleigh.fleet.views;
+package io.sleigh.fleet.views.admin;
 
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.html.Div;
@@ -10,11 +10,11 @@ import com.vaadin.flow.router.RouterLink;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainLayout extends AppLayout {
+public class MainLayoutAdmin extends AppLayout {
 
     private final List<Div> linkContainers = new ArrayList<>();
 
-    public MainLayout() {
+    public MainLayoutAdmin() {
         H1 logo = new H1("Crèche Admin");
         logo.getStyle().set("font-size", "24px").set("margin", "20px");
         addToNavbar(logo);
@@ -28,10 +28,7 @@ public class MainLayout extends AppLayout {
         drawerLayout.add(
                 createLinkContainer("Children Management", ChildrenManagementView.class),
                 createLinkContainer("User Management", UserManagementView.class),
-                createLinkContainer("Daily Tracking", DailyTrackingView.class),
-                createLinkContainer("Meals & Health", MealsAndHealthView.class),
-                createLinkContainer("Communication", CommunicationView.class),
-                createLinkContainer("Finance & HR", FinanceHRView.class)
+                createLinkContainer("Daily Tracking", InscriptionManagement.class)
         );
 
         addToDrawer(drawerLayout);

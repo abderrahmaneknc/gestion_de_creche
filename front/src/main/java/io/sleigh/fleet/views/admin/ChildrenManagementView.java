@@ -1,4 +1,4 @@
-package io.sleigh.fleet.views;
+package io.sleigh.fleet.views.admin;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -15,7 +15,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Route(value = "children-management", layout = MainLayout.class)
+@Route(value = "children-management", layout = MainLayoutAdmin.class)
 public class ChildrenManagementView extends VerticalLayout {
 
     private final Grid<Child> childGrid;
