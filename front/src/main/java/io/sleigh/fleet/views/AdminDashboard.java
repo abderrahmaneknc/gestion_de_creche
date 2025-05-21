@@ -5,7 +5,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
-import io.sleigh.fleet.views.MainLayout;
+
 
 @Route(value = "admin-dashboard", layout = MainLayout.class)
 public class AdminDashboard extends VerticalLayout implements BeforeEnterObserver {

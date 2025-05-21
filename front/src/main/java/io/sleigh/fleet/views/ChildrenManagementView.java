@@ -33,18 +33,31 @@ public class ChildrenManagementView extends VerticalLayout {
                 .set("margin-bottom", "10px")
                 .set("color", "#2c3e50");
 
-        // Delete Button
+        // Buttons
+        Button addButton = new Button("Add Child");
+        addButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        addButton.getStyle()
+                .set("background-color", "#1976d2")
+                .set("color", "white")
+                .set("margin-right", "10px")
+                .set("height", "40px");
+
         Button deleteButton = new Button("Delete Child");
         deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
         deleteButton.getStyle()
                 .set("background-color", "#e53935")
                 .set("color", "white")
-                .set("border", "none")
-                .set("margin-left", "auto");
+                .set("height", "40px");
 
-        HorizontalLayout headerLayout = new HorizontalLayout(title, deleteButton);
+        HorizontalLayout buttonLayout = new HorizontalLayout(addButton, deleteButton);
+        buttonLayout.setSpacing(true);
+        buttonLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+        buttonLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+
+        HorizontalLayout headerLayout = new HorizontalLayout(title, buttonLayout);
         headerLayout.setWidthFull();
         headerLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+        headerLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
 
         // Grid
         childGrid = new Grid<>(Child.class, false);
@@ -79,7 +92,7 @@ public class ChildrenManagementView extends VerticalLayout {
                 .setAutoWidth(true)
                 .setSortable(true);
 
-        // Enable single selection
+        // Enable row selection
         GridSelectionModel<Child> selectionModel = childGrid.setSelectionMode(Grid.SelectionMode.MULTI);
         selectionModel.addSelectionListener(event -> {
             selectedChildren.clear();
@@ -87,7 +100,7 @@ public class ChildrenManagementView extends VerticalLayout {
             System.out.println("Selected children IDs: " + selectedChildren);
         });
 
-        // Sample children
+        // Static sample data
         List<Child> children = List.of(
                 new Child(1L, "Alice", "Smith", LocalDate.of(2019, 5, 12), "Pre-K"),
                 new Child(2L, "Bob", "Johnson", LocalDate.of(2018, 3, 22), "Kindergarten"),
@@ -96,7 +109,7 @@ public class ChildrenManagementView extends VerticalLayout {
         );
         childGrid.setItems(children);
 
-        // Add styles to selected rows
+        // Selected row style
         childGrid.getElement().executeJs("""
             const style = document.createElement('style');
             style.textContent = `
