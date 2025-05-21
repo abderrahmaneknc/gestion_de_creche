@@ -2,13 +2,18 @@ package io.sleigh.fleet.views.admin;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridSelectionModel;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 
 import java.time.LocalDate;
@@ -123,7 +128,91 @@ public class ChildrenManagementView extends VerticalLayout {
             document.head.appendChild(style);
         """);
 
+        // Add Child Dialog
+        Dialog addChildDialog = createAddChildDialog();
+
+        addButton.addClickListener(e -> addChildDialog.open());
+
         add(headerLayout, childGrid);
+    }
+
+    private Dialog createAddChildDialog() {
+        Dialog dialog = new Dialog();
+        dialog.setWidth("400px");
+
+        // Input fields
+        TextField firstNameField = new TextField("First Name");
+        TextField lastNameField = new TextField("Last Name");
+        DatePicker birthdayPicker = new DatePicker("Birthday");
+        TextField gradeField = new TextField("Grade");
+
+        FormLayout formLayout = new FormLayout();
+        formLayout.add(firstNameField, lastNameField, birthdayPicker, gradeField);
+        formLayout.setMaxWidth("400px");
+
+        // Buttons
+        Button confirmButton = new Button("Confirm Add");
+        confirmButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        confirmButton.getStyle()
+                .set("background-color", "#1976d2")
+                .set("color", "white")
+                .set("width", "100%");
+
+        Button cancelButton = new Button("Cancel");
+        cancelButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
+        cancelButton.getStyle()
+                .set("background-color", "#9e9e9e")
+                .set("color", "white")
+                .set("width", "100%");
+
+        VerticalLayout buttonsLayout = new VerticalLayout(confirmButton, cancelButton);
+        buttonsLayout.setSpacing(true);
+        buttonsLayout.setPadding(false);
+        buttonsLayout.setWidthFull();
+
+        VerticalLayout dialogLayout = new VerticalLayout(formLayout, buttonsLayout);
+        dialogLayout.setPadding(false);
+        dialogLayout.setSpacing(true);
+        dialogLayout.setAlignItems(FlexComponent.Alignment.STRETCH);
+
+        dialog.add(dialogLayout);
+
+        // Confirm button logic (simple example: add new child to grid)
+        confirmButton.addClickListener(event -> {
+            String firstName = firstNameField.getValue().trim();
+            String lastName = lastNameField.getValue().trim();
+            LocalDate birthday = birthdayPicker.getValue();
+            String grade = gradeField.getValue().trim();
+
+            if (firstName.isEmpty() || lastName.isEmpty() || birthday == null || grade.isEmpty()) {
+                Notification.show("Please fill in all fields", 3000, Notification.Position.MIDDLE);
+                return;
+            }
+
+            // Add new child - here you should actually save to your backend
+            long newId = childGrid.getDataProvider().fetch(new com.vaadin.flow.data.provider.Query<>()).count() + 1;
+            Child newChild = new Child(newId, firstName, lastName, birthday, grade);
+            childGrid.getListDataView().addItem(newChild);
+
+            dialog.close();
+            Notification.show("Child added successfully", 3000, Notification.Position.TOP_CENTER);
+
+            // Clear fields for next use
+            firstNameField.clear();
+            lastNameField.clear();
+            birthdayPicker.clear();
+            gradeField.clear();
+        });
+
+        cancelButton.addClickListener(e -> {
+            dialog.close();
+            firstNameField.clear();
+            lastNameField.clear();
+            birthdayPicker.clear();
+            gradeField.clear();
+        });
+
+        return dialog;
     }
 
     public static class Child {
