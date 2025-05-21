@@ -1,4 +1,4 @@
-package io.sleigh.fleet.views;
+package io.sleigh.fleet.views.forall;
 import com.vaadin.flow.component.UI;
 
 import com.vaadin.flow.component.button.Button;
