@@ -1,5 +1,6 @@
 package io.sleigh.fleet.views.guest;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
@@ -111,6 +112,7 @@ public class childParentRegistration extends VerticalLayout {
             nextButton.setVisible(true);
             confirmButton.setVisible(false);
             backButton.setVisible(false);
+
         });
 
         backButton.setVisible(false); // initially hidden
@@ -128,9 +130,8 @@ public class childParentRegistration extends VerticalLayout {
         });
         confirmButton.setVisible(false); // initially hidden
 
-        Button returnButton = new Button("Return", e -> {
-            getUI().ifPresent(ui -> ui.navigate("signup")); // adjust route as needed
-        });
+        Button returnButton = new Button("Return", e -> UI.getCurrent().navigate("guest")
+        );
 
         // BUTTON LAYOUT
 

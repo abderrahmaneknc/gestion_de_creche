@@ -1,5 +1,6 @@
 package io.sleigh.fleet.views.guest;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
@@ -11,6 +12,7 @@ import com.vaadin.flow.router.Route;
 
 @Route("guest")
 public class guest extends VerticalLayout {
+    private Button returnbutton;
 
     public guest() {
         // Fill screen and center content
@@ -42,9 +44,8 @@ public class guest extends VerticalLayout {
 
 
         // Buttons
-        Button registerChildButton = new Button("Register My Child", e -> {
-            Notification.show("Child registration submitted.");
-        });
+        Button registerChildButton = new Button("Register My Child", e -> UI.getCurrent().navigate("register-child-parent-ins")
+        );
 
         Button requestTeacherButton = new Button("Request to Become a Teacher", e -> {
             Notification.show("Teacher request submitted.");
@@ -59,11 +60,13 @@ public class guest extends VerticalLayout {
         requestTeacherButton.setWidthFull();
         requestChefButton.setWidthFull();
 
+
+        Button returnButton = new Button("Return", e -> UI.getCurrent().navigate(""));
         // Add everything to layout
         formLayout.add(title, description,
                 registerChildButton, requestTeacherButton, requestChefButton);
 
         formWrapper.add(formLayout);
-        add(formWrapper);
+        add(formWrapper,returnButton);
     }
 }
